@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # genba-note 関連
+  # ==========================================
+  genba-note.test:
+    build:
+      context: ./genba-note/docker/8.3 
+      dockerfile: Dockerfile
+    image: genba-note-app
+    ports:
+      - "8001:80" 
+    environment:
+      WWWUSER: '${WWWUSER:-1000}'
+      LARAVEL_SAIL: 1
+    volumes:
+      - ./genba-note:/var/www/html
+    networks:
+      - app-network
+    depends_on:
+      - genba-note-mysql
+
+  genba-note-mysql:
+    image: 'mysql:8.4'
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: 'genba_note'
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_USER: 'sail'
+      MYSQL_PASSWORD: 'password'
+    volumes:
+      - genba-note-mysql-data:/var/lib/mysql
+    networks:
+      - app-network
+
+  # ==========================================
+  # maintenance_app 関連
+  # ==========================================
+  maintenance-app.test:
+    build:
+      context: ./maintenance_app/docker/8.3
+      dockerfile: Dockerfile
+    image: maintenance-app
+    ports:
+      - "8002:80"
+    environment:
+      WWWUSER: '${WWWUSER:-1000}'
+      LARAVEL_SAIL: 1
+    volumes:
+      - ./maintenance_app:/var/www/html
+    networks:
+      - app-network
+    depends_on:
+      - maintenance-mysql
+
+  maintenance-mysql:
+    image: 'mysql:8.4'
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_DATABASE: 'maintenance_app'
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_USER: 'sail'
+      MYSQL_PASSWORD: 'password'
+    volumes:
+      - maintenance-mysql-data:/var/lib/mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  genba-note-mysql-data:
+    driver: local
+  maintenance-mysql-data:
+    driver: local
