@@ -1,0 +1,32 @@
+# Environment
+.env
+src/.env
+
+# Laravel
+src/vendor/
+src/node_modules/
+src/storage/*.key
+src/storage/logs/*
+src/storage/framework/cache/*
+src/storage/framework/sessions/*
+src/storage/framework/views/*
+src/bootstrap/cache/*.php
+!src/storage/logs/.gitkeep
+!src/storage/framework/cache/.gitkeep
+!src/storage/framework/sessions/.gitkeep
+!src/storage/framework/views/.gitkeep
+!src/bootstrap/cache/.gitkeep
+
+# Python
+python/__pycache__/
+python/.venv/
+*.pyc
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-data/

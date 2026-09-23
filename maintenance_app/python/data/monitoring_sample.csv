@@ -1,0 +1,15 @@
+equipment,area,point,category_major,category_middle,category_minor,date,metric,value,threshold,status
+P-101,反応槽A,軸受DE,設備,反応槽A,軸受,2026-07-20,vibration,2.1,4.0,ok
+P-101,反応槽A,軸受DE,設備,反応槽A,軸受,2026-07-27,vibration,3.4,4.0,ok
+P-101,反応槽A,軸受DE,設備,反応槽A,軸受,2026-08-03,vibration,4.2,4.0,warn
+P-101,反応槽A,軸受DE,設備,反応槽A,軸受,2026-08-10,vibration,4.8,4.0,alarm
+P-101,反応槽A,軸受NDE,設備,反応槽A,軸受,2026-08-03,vibration,2.0,4.0,ok
+P-101,反応槽A,軸受NDE,設備,反応槽A,軸受,2026-08-10,vibration,3.9,4.0,ok
+PT-201,反応槽A,圧力計,設備,反応槽A,圧力計,2026-07-25,pressure,0.85,1.0,ok
+PT-201,反応槽A,圧力計,設備,反応槽A,圧力計,2026-08-01,pressure,0.95,1.0,ok
+PT-201,反応槽A,圧力計,設備,反応槽A,圧力計,2026-08-08,pressure,1.12,1.0,warn
+M-301,ユーティリティ,モータ巻線,ユーティリティ,冷却水,モータ,2026-07-22,temperature,62,75,ok
+M-301,ユーティリティ,モータ巻線,ユーティリティ,冷却水,モータ,2026-08-05,temperature,78,75,warn
+M-301,ユーティリティ,モータ巻線,ユーティリティ,冷却水,モータ,2026-08-11,temperature,81,75,alarm
+C-110,電気設備,遮断器,電気設備,受電盤,遮断器,2026-08-01,current,120,150,ok
+C-110,電気設備,遮断器,電気設備,受電盤,遮断器,2026-08-09,current,148,150,ok

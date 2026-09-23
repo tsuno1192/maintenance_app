@@ -1,0 +1,78 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: tmq_app
+    ports:
+      - "${APP_PORT:-8080}:80"
+    volumes:
+      - ./src:/var/www/html
+    environment:
+      APP_NAME: ${APP_NAME:-TMQ}
+      APP_ENV: ${APP_ENV:-local}
+      APP_DEBUG: ${APP_DEBUG:-true}
+      APP_URL: ${APP_URL:-http://localhost:8080}
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE:-tmq}
+      DB_USERNAME: ${DB_USERNAME:-tmq}
+      DB_PASSWORD: ${DB_PASSWORD:-secret}
+      PYTHON_ENGINE_URL: ${PYTHON_ENGINE_URL:-http://python_engine:8000}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - tmq_network
+      - shared-network
+    restart: unless-stopped
+
+  python_engine:
+    build:
+      context: .
+      dockerfile: docker/python/Dockerfile
+    container_name: tmq_python_engine
+    ports:
+      - "${PYTHON_PORT:-8000}:8000"
+    volumes:
+      - ./python:/app
+    environment:
+      PYTHONUNBUFFERED: 1
+    networks:
+      - tmq_network
+      
+    restart: unless-stopped
+
+  db:
+    image: mysql:8.0
+    container_name: tmq_db
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootsecret}
+      MYSQL_DATABASE: ${DB_DATABASE:-tmq}
+      MYSQL_USER: ${DB_USERNAME:-tmq}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+    volumes:
+      - tmq_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${DB_ROOT_PASSWORD:-rootsecret}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    networks:
+      - tmq_network
+      - shared-network
+    restart: unless-stopped
+
+volumes:
+  tmq_db_data:
+
+ 
+networks:
+  tmq_network:
+    driver: bridge
+  shared-network:
+    external: true 
