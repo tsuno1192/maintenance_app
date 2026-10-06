@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
+use App\Models\Machine;
 
 class MachineController extends Controller
 {
@@ -21,22 +22,27 @@ class MachineController extends Controller
 
     public function index(Request $request): View
     {
-        // genba-note の API へ検索・フィルターパラメータを渡してリクエスト
-        $response = Http::get("{$this->baseUrl}/machines", [
-            'q' => $request->input('q'),
-            'area' => $request->input('area'),
-            'status' => $request->input('status'),
-            'page' => $request->input('page', 1),
-        ]);
+        $query = Machine::query();
 
-        $data = $response->successful() ? $response->json() : [];
-        $machines = $data['data'] ?? []; // APIのレスポンス構造（Resource等）に合わせて調整
-        
-        // エリアの一覧などもAPI経由、あるいは共通マスタとして取得するのが理想ですが、
-        // 必要に応じてAPIから取得するか固定値・別エンドポイントから取得します。
+        if ($q = $request->input('q')) {
+            $query->where('name', 'like', "%{$q}%")
+                ->orWhere('code', 'like', "%{$q}%");
+        }
+
+        if ($area = $request->input('area')) {
+            $query->where('area', $area);
+        }
+
+        if ($status = $request->input('status')) {
+            $query->where('status', $status);
+        }
+
+        $machines = $query->withCount(['memos', 'troubles'])->paginate(10);
+        $areas = Machine::distinct()->pluck('area')->filter()->values();
+
         return view('machines.index', [
             'machines' => $machines,
-            'areas' => [], // 必要に応じて genba-note から取得
+            'areas' => $areas,
             'q' => $request->input('q'),
             'area' => $request->input('area'),
             'status' => $request->input('status'),

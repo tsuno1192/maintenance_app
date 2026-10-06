@@ -57,7 +57,7 @@ class ToolSeeder extends Seeder
             ToolLog::factory()->create([
                 'tool_id' => $tool->id,
                 'user_id' => $users->random()->id,
-                'action' => ToolLogAction::Borrowed,
+                'action' => ToolLogAction::Checkout,
                 'notes' => '現場点検のため貸出',
             ]);
 
@@ -65,7 +65,7 @@ class ToolSeeder extends Seeder
                 ToolLog::factory()->create([
                     'tool_id' => $tool->id,
                     'user_id' => $users->random()->id,
-                    'action' => ToolLogAction::Returned,
+                    'action' => ToolLogAction::Checkin,
                     'notes' => '返却完了',
                 ]);
             }

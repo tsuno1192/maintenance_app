@@ -1,6 +1,12 @@
 @php($tool = $tool ?? null)
 
 <div>
+    <label class="mb-2 block text-lg font-semibold" for="code">管理番号</label>
+    <input id="code" name="code" value="{{ old('code', $tool?->code) }}" required placeholder="TOOL-001" class="min-h-14 w-full rounded-2xl border border-slate-300 px-4 text-lg">
+    @error('code')<p class="mt-2 text-rose-600">{{ $message }}</p>@enderror
+</div>
+
+<div>
     <label class="mb-2 block text-lg font-semibold" for="name">工具名</label>
     <input id="name" name="name" value="{{ old('name', $tool?->name) }}" required class="min-h-14 w-full rounded-2xl border border-slate-300 px-4 text-lg">
     @error('name')<p class="mt-2 text-rose-600">{{ $message }}</p>@enderror

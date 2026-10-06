@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+
 /**
  * 工場設備（マシン）マスタ。
  *
@@ -47,4 +48,13 @@ class Machine extends Model
     {
         return $this->hasMany(Memo::class);
     }
+
+    
+     public function troubles()
+    {
+        return $this->hasMany(Trouble::class); 
+    }
+   
+
+
 }

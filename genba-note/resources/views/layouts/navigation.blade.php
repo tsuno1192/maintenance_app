@@ -15,6 +15,18 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    <!-- 設備一覧へのリンク -->
+                    <x-nav-link :href="route('machines.index')" :active="request()->routeIs('machines.index')">
+                        {{ __('Machines') }}
+                    </x-nav-link>
+
+                    <!-- マシン登録画面へのリンク -->
+                    <x-nav-link :href="route('machines.create')" :active="request()->routeIs('machines.create')">
+                        {{ __('マシン登録') }}
+                    </x-nav-link>
+
+
                 </div>
             </div>
 
@@ -43,7 +55,7 @@
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
+                                onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
@@ -67,9 +79,21 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+            </x-nav-link>
+
+            <!-- 設備一覧へのリンク -->
+            <x-nav-link :href="route('machines.index')" :active="request()->routeIs('machines.index')">
+                {{ __('Machines') }}
+            </x-nav-link>
+
+            <!-- マシン登録画面へのリンク -->
+            <x-nav-link :href="route('machines.create')" :active="request()->routeIs('machines.create')">
+                {{ __('マシン登録') }}
+            </x-nav-link>
+
+
         </div>
 
         <!-- Responsive Settings Options -->
@@ -89,7 +113,7 @@
                     @csrf
 
                     <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
+                        onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>

@@ -1,5 +1,5 @@
 @php
-    $selectedMachine = old('machine_id', $memo?->machine_id ?? request('machine_id'));
+$selectedMachine = old('machine_id', $memo?->machine_id ?? request('machine_id'));
 @endphp
 
 <section class="tmq-card">
@@ -14,19 +14,21 @@
             <select name="machine_id">
                 <option value="">なし</option>
                 @foreach ($machines as $machine)
-                    <option value="{{ $machine->id }}" @selected((string) $selectedMachine === (string) $machine->id)>
-                        {{ $machine->displayName() }}
-                    </option>
-                @endforeach
+                {{-- APIから取得するデータの構造（配列）に合わせてプロパティまたはキーを指定します --}}
+                {{-- 例: $machine が連想配列や配列の場合（id や name, display_name を持つと仮定） --}}
+                <option value="{{ is_array($machine) ? $machine['id'] : $machine->id }}"
+                    @selected((string) $selectedMachine===(string) (is_array($machine) ? $machine['id'] : $machine->id))>
+                    {{ is_array($machine) ? ($machine['display_name'] ?? $machine['name']) : $machine->displayName() }}
+                    @endforeach
             </select>
         </label>
         <label class="tmq-field">
             <span>勤務帯 <em>*</em></span>
             <select name="shift" required>
                 @foreach ($shifts as $shift)
-                    <option value="{{ $shift->value }}" @selected(old('shift', $memo?->shift?->value ?? 'day') === $shift->value)>
-                        {{ $shift->label() }}
-                    </option>
+                <option value="{{ $shift->value }}" @selected(old('shift', $memo?->shift?->value ?? 'day') === $shift->value)>
+                    {{ $shift->label() }}
+                </option>
                 @endforeach
             </select>
         </label>
@@ -34,9 +36,9 @@
             <span>重要度 <em>*</em></span>
             <select name="priority" required>
                 @foreach ($priorities as $priority)
-                    <option value="{{ $priority->value }}" @selected(old('priority', $memo?->priority?->value ?? 'normal') === $priority->value)>
-                        {{ $priority->label() }}
-                    </option>
+                <option value="{{ $priority->value }}" @selected(old('priority', $memo?->priority?->value ?? 'normal') === $priority->value)>
+                    {{ $priority->label() }}
+                </option>
                 @endforeach
             </select>
         </label>
@@ -50,22 +52,21 @@
         label="申し送り内容"
         :value="old('body', $memo?->body)"
         rows="8"
-        placeholder="次の勤務へ伝えたい内容"
-    />
+        placeholder="次の勤務へ伝えたい内容" />
     <label class="tmq-field">
         <span>写真を追加</span>
         <input type="file" name="images[]" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
     </label>
 
     @if ($memo?->images?->isNotEmpty())
-        <p class="tmq-hint">登録済みの写真</p>
-        <div class="tmq-thumb-grid">
-            @foreach ($memo->images as $image)
-                <figure>
-                    <img src="{{ route('memos.images.show', [$memo, $image]) }}" alt="{{ $image->original_name }}">
-                    <figcaption>{{ $image->original_name }}</figcaption>
-                </figure>
-            @endforeach
-        </div>
+    <p class="tmq-hint">登録済みの写真</p>
+    <div class="tmq-thumb-grid">
+        @foreach ($memo->images as $image)
+        <figure>
+            <img src="{{ route('memos.images.show', [$memo, $image]) }}" alt="{{ $image->original_name }}">
+            <figcaption>{{ $image->original_name }}</figcaption>
+        </figure>
+        @endforeach
+    </div>
     @endif
 </section>

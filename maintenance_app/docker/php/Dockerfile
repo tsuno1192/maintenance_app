@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# System dependencies
+# System dependencies & Node.js
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -12,6 +12,8 @@ RUN apt-get update && apt-get install -y \
     default-mysql-client \
     fonts-ipafont-gothic \
     fonts-ipafont-mincho \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
     && docker-php-ext-install \
         pdo_mysql \
         mbstring \

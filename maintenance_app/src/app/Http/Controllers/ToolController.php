@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
+use App\Models\Tool;
 
 class ToolController extends Controller
 {
@@ -22,20 +23,26 @@ class ToolController extends Controller
 
     public function index(Request $request): View
     {
-        $response = Http::get("{$this->baseUrl}/tools", [
-            'q' => $request->input('q'),
-            'status' => $request->input('status'),
-            'page' => $request->input('page', 1),
-        ]);
+        $query = Tool::query();
 
-        $data = $response->successful() ? $response->json() : [];
-        $tools = $data['data'] ?? [];
+        if ($q = $request->input('q')) {
+            $query->where('name', 'like', "%{$q}%")
+                ->orWhere('code', 'like', "%{$q}%");
+        }
+
+        // ステータスでの絞り込み（フォームから送信されている場合）
+        if ($status = $request->input('status')) {
+            $query->where('status', $status);
+        }
+
+        // 1ページあたり10件でページネーションを取得（検索クエリやステータスを維持）
+        $tools = $query->paginate(10)->withQueryString();
 
         return view('tools.index', [
             'tools' => $tools,
             'q' => $request->input('q'),
-            'status' => $request->input('status'),
-            'statuses' => ToolStatus::cases(),
+            'status' => $request->input('status'), // 選択中のステータス
+            'statuses' => ToolStatus::cases(),     // ステータスの選択肢一覧
         ]);
     }
 
@@ -49,6 +56,13 @@ class ToolController extends Controller
     public function store(StoreToolRequest $request): RedirectResponse
     {
         $response = Http::post("{$this->baseUrl}/tools", $request->validated());
+
+        // ★ ここでレスポンスの詳細を画面に表示して止める
+        if (!$response->successful()) {
+            dd($response->status(), $response->json());
+        }
+
+
 
         if ($response->successful()) {
             $tool = $response->json();

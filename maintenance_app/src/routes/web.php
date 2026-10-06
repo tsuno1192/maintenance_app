@@ -10,14 +10,14 @@ use App\Http\Controllers\TodoController;
 use App\Http\Controllers\ToolController;
 use App\Http\Controllers\TroubleController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    return auth()->check()
+    return Auth::check()
         ? redirect()->route('dashboard')
         : redirect()->route('login');
 });
 
-require __DIR__.'/auth.php';
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
@@ -57,3 +57,5 @@ Route::middleware('auth')->group(function () {
     Route::resource('tools', ToolController::class);
     Route::post('/tools/{tool}/logs', [ToolController::class, 'storeLog'])->name('tools.logs.store');
 });
+
+require __DIR__.'/auth.php';
